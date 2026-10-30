@@ -110,7 +110,7 @@ fun JournalScreen(modifier: Modifier = Modifier) {
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Text("New journal entry", style = MaterialTheme.typography.headlineSmall)
+        Text("New post", style = MaterialTheme.typography.headlineSmall)
 
         Card(Modifier.fillMaxWidth()) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {

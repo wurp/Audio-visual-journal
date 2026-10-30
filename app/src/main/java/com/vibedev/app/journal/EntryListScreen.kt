@@ -52,9 +52,9 @@ fun EntryListScreen(
         )
         if (feed.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
         when {
-            !feed.hasFolder -> Message("Choose a folder on the New tab to start your journal.")
+            !feed.hasFolder -> Message("Choose a folder on the New post tab to start your journal.")
             feed.error != null -> Message("Couldn't read the journal: ${feed.error}")
-            feed.entries.isEmpty() && !feed.loading -> Message("No entries yet. Make one on the New tab.")
+            feed.entries.isEmpty() && !feed.loading -> Message("No entries yet. Make one on the New post tab.")
         }
         LazyColumn(
             state = listState,

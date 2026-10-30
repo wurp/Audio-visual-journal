@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 
-private enum class Tab(val label: String, val glyph: String) { NEW("New", "✎"), JOURNAL("Journal", "📖") }
+private enum class Tab(val label: String, val glyph: String) { NEW("New post", "✎"), JOURNAL("Journal", "📖") }
 
 /** The app's two tabs: making a new entry, and reading past ones. */
 @Composable
