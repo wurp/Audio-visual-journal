@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 // The app's main color. Change it to restyle the whole app.
-private val Brand = Color(0xFF6750A4)
+private val Brand = Color(0xFF2E6B5E)
 
 private val LightColors = lightColorScheme(primary = Brand)
 private val DarkColors = darkColorScheme(primary = Color(0xFFD0BCFF))
