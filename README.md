@@ -3,8 +3,14 @@
 # Build Android apps from your phone with Claude
 
 <!-- vibe-dev:start-link -->
-> **Made a repository from this template?** Within a minute or two, start steps for your repository appear here. Refresh the page if you don't see them yet.
-<!-- /vibe-dev:start-link -->
+## Next: start building
+
+1. In the Claude app, open **Code** and tap **New session**.
+2. Tap the repository name above the message box and choose **`Audio-visual-journal`**. The Claude app opens on whichever repository you used last, so always check this.
+3. Send this message: `Start my app in Audio-visual-journal from its description.`
+
+On a computer, [this link](https://claude.ai/code?repositories=wurp/Audio-visual-journal&prompt=Start%20my%20app%20in%20Audio-visual-journal%20from%20its%20description.) opens Claude with the repository and message already filled in.
+<!-- /vibe-dev:start-link done -->
 
 Describe the app you want in the Claude app. Claude writes it, GitHub builds it, and a few minutes later you install it on your phone from a link. Ask for changes the same way; each new version installs over the old one and keeps your data.
 
