@@ -1,0 +1,57 @@
+# Runs once in a new repository made from this template: replaces the placeholder in
+# README.md with start steps that name this repository, plus a pre-filled link for computers.
+# Does nothing in the template itself, or once the link (or a new README) is in place.
+name: Add start link
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  start-link:
+    if: github.repository != 'wurp/vibe-dev-template'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Put this repository's start steps into the README
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          export REPO_DESCRIPTION="$(gh api "repos/$GITHUB_REPOSITORY" --jq '.description // ""' 2>/dev/null || true)"
+          python3 - <<'PY'
+          import os, pathlib, re, urllib.parse
+          readme = pathlib.Path("README.md")
+          start, end = "<!-- vibe-dev:start-link -->", "<!-- /vibe-dev:start-link -->"
+          text = readme.read_text() if readme.exists() else ""
+          if start not in text or end not in text:
+              raise SystemExit("No placeholder; nothing to do.")
+          repo = os.environ["GITHUB_REPOSITORY"]
+          name = repo.split("/")[1]
+          has_description = bool(os.environ.get("REPO_DESCRIPTION", "").strip())
+          first = (f"Start my app in {name} from its description." if has_description
+                   else f"Start a new app in {name}.")
+          link = f"https://claude.ai/code?repositories={repo}&prompt={urllib.parse.quote(first)}"
+          block = (
+              f"{start}\n"
+              "## Next: start building\n\n"
+              "1. In the Claude app, open **Code** and tap **New session**.\n"
+              f"2. Tap the repository name above the message box and choose **`{name}`**. "
+              "The Claude app opens on whichever repository you used last, so always check this.\n"
+              f"3. Send this message: `{first}`\n\n"
+              f"On a computer, [this link]({link}) opens Claude with the repository and message already filled in.\n"
+              "<!-- /vibe-dev:start-link done -->"
+          )
+          readme.write_text(re.sub(re.escape(start) + r".*?" + re.escape(end), lambda _: block, text, flags=re.S))
+          PY
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -am "Add start steps for this repository"
+            git push
+          fi
