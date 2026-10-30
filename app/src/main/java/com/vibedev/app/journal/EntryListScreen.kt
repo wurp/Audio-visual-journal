@@ -19,9 +19,10 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -36,12 +37,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EntryListScreen(
     feed: JournalFeed,
     loader: MediaLoader,
     listState: LazyListState,
     onOpen: (StoredEntry) -> Unit,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.fillMaxSize()) {
@@ -50,14 +53,15 @@ fun EntryListScreen(
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 8.dp),
         )
-        if (feed.loading) LinearProgressIndicator(Modifier.fillMaxWidth())
         when {
             !feed.hasFolder -> Message("Choose a folder on the New post tab to start your journal.")
             feed.error != null -> Message("Couldn't read the journal: ${feed.error}")
             feed.entries.isEmpty() && !feed.loading -> Message("No entries yet. Make one on the New post tab.")
         }
+        PullToRefreshBox(isRefreshing = feed.loading, onRefresh = onRefresh, modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             state = listState,
+            modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
@@ -73,6 +77,7 @@ fun EntryListScreen(
                 }
                 EntryRow(entry, loader, onClick = { onOpen(entry) })
             }
+        }
         }
     }
 }

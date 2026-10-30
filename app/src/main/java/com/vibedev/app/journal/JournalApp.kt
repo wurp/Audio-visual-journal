@@ -13,12 +13,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 
 private enum class Tab(val label: String, val glyph: String) { NEW("New post", "✎"), JOURNAL("Journal", "📖") }
 
@@ -32,6 +34,7 @@ fun JournalApp() {
         JournalFeed { location.folder?.let { FolderJournalReader(DocumentTree(context.contentResolver, it)) } }
     }
     val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
     val tabs = rememberSaveableStateHolder()
     var tab by rememberSaveable { mutableStateOf(Tab.NEW) }
     var opened by remember { mutableStateOf<StoredEntry?>(null) }
@@ -59,7 +62,8 @@ fun JournalApp() {
             when (tab) {
                 Tab.NEW -> JournalScreen(inner)
                 Tab.JOURNAL -> opened?.let { EntryDetailScreen(it, loader, onBack = { opened = null }, modifier = inner) }
-                    ?: EntryListScreen(feed, loader, listState, onOpen = { opened = it }, modifier = inner)
+                    ?: EntryListScreen(feed, loader, listState, onOpen = { opened = it },
+                        onRefresh = { scope.launch { feed.refresh() } }, modifier = inner)
             }
         }
     }

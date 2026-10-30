@@ -16,6 +16,7 @@ class JournalFeed(private val readerFor: () -> JournalReader?) {
         private set
 
     suspend fun refresh() {
+        if (loading) return
         val reader = readerFor()
         hasFolder = reader != null
         if (reader == null) { entries.clear(); return }
